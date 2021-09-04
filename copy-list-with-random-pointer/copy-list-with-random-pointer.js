@@ -12,17 +12,33 @@
  * @return {Node}
  */
 const copyRandomList = function(head) {
-  let pmap = new Map(), dummy = {},
-      curr = head, copy = dummy;
-  while (curr) {
-    let newNode = new Node(curr.val, null, null);           // Create the new copied node
-    pmap.set(curr, newNode);                                // Make the association in our map
-    copy.next = newNode, copy = newNode, curr = curr.next   // Move forward for the next node
+  if (head === null) return head;
+  let curr = head;
+  // create and weave duplicates of each node in the linked list and reassign next pointers
+  while (curr !== null) {
+    let tmp = curr.next;
+    curr.next = new Node(curr.val, tmp, null);
+    curr = tmp;
   }
-  curr = head, copy = dummy.next;                           // Reset back to the start 
-  while (curr) {
-    copy.random = pmap.get(curr.random);                    // Update the .random attribute
-    curr = curr.next, copy = copy.next;                     // Move forward for the next node
+  // assign random pointers to newly created nodes
+  curr = head;
+  while (curr !== null) {
+    if (curr.random !== null) {
+      curr.next.random = curr.random.next;
+    }
+    curr = curr.next.next;
   }
-  return dummy.next;
+  // unweave the linked list by reassigning next pointers.
+  curr = head;
+  let copyHead = head.next;
+  while (curr !== null) {
+    let tmp = curr.next.next;
+    let copy = curr.next;
+    curr.next = tmp;
+    if (tmp !== null) {
+      copy.next = tmp.next;
+    }
+    curr = tmp;
+  }
+  return copyHead;
 };
