@@ -5,15 +5,14 @@
  * @param {number} end
  * @return {boolean}
  */
+
 var validPath = function(n, edges, start, end) {
-    // Create a hashmap to be used as our adjacency list
     const graph = new Map();
-    
     // Create a set to store our visited nodes
     const visited = new Set();
     
-    // Build adjacency list (undirected)
-    for (const [v, e] of edges) {
+    // Build adjacency list
+    for (let [v, e] of edges) {
         if (graph.has(v)) {
             graph.get(v).push(e);
         } else {
@@ -25,28 +24,29 @@ var validPath = function(n, edges, start, end) {
             graph.set(e, [v]);
         }
     }
+    
+    const bfs = (node) => {
+        // set the first value as the first queue
+        let queue = [node];
         
-    // Define a recursive DFS helper
-    function dfs(v) {
-        // Add to visited set
-        visited.add(v);
+        visited.add(node);
         
-        // Get adjacent vertices
-        const edges = graph.get(v);
-                
-        // For all adjacent vertices, run DFS
-        if (edges && edges.length > 0) {
-            for (const e of edges) {
-                if (!visited.has(e)) {
-                    dfs(e);
-                }
+        while (queue.length > 0) {
+            if (visited.has(end)) return;
+            
+            const currNode = queue.shift();
+            const edges = graph.get(currNode);
+            
+            if (edges && edges.length > 0) {
+                edges.forEach( e => {
+                    if (!visited.has(e)) {
+                        visited.add(e);
+                        queue.push(e)
+                    }
+                });
             }
         }
-    }
-        
-    // DFS from starting input node
-    dfs(start);
-
-    // Return true/false if our visited set has our end node
-   return visited.has(end);
+    };
+    bfs(start);
+    return visited.has(end);
 };
