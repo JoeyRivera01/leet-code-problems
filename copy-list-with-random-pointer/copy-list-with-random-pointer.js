@@ -11,34 +11,48 @@
  * @param {Node} head
  * @return {Node}
  */
-const copyRandomList = function(head) {
-  if (head === null) return head;
-  let curr = head;
-  // create and weave duplicates of each node in the linked list and reassign next pointers
-  while (curr !== null) {
-    let tmp = curr.next;
-    curr.next = new Node(curr.val, tmp, null);
-    curr = tmp;
-  }
-  // assign random pointers to newly created nodes
-  curr = head;
-  while (curr !== null) {
-    if (curr.random !== null) {
-      curr.next.random = curr.random.next;
+// approach iterative
+// time complexity O(n)
+// space complexity O(1)
+
+const copyRandomList = (head) => {
+    // edge case
+    if (head === null) return head;
+    let curr = head;
+    
+    // create and weave the duplicate nodes into the linked list and reassign next pointers
+    while (curr !== null) {
+        let tmp = curr.next;
+        curr.next = new Node(curr.val, tmp, null);
+        curr = tmp;
     }
-    curr = curr.next.next;
-  }
-  // unweave the linked list by reassigning next pointers.
-  curr = head;
-  let copyHead = head.next;
-  while (curr !== null) {
-    let tmp = curr.next.next;
-    let copy = curr.next;
-    curr.next = tmp;
-    if (tmp !== null) {
-      copy.next = tmp.next;
+    
+    curr = head;
+    // assign random pointers to newly created nodes
+    while (curr !== null) {
+        if (curr.random !== null) {
+            curr.next.random = curr.random.next
+        }
+        curr = curr.next.next;
     }
-    curr = tmp;
-  }
-  return copyHead;
-};
+    
+    curr = head;
+    let copyHead = head.next;
+    // unweave the linked list by reassigning next pointers
+    while (curr !== null) {
+        let tmp = curr.next.next;
+        let copy = curr.next;
+        curr.next = tmp;
+        if (tmp !== null) {
+            copy.next = tmp.next
+        }
+        curr = tmp;
+    }
+    
+    return copyHead;
+}
+
+
+
+
+
