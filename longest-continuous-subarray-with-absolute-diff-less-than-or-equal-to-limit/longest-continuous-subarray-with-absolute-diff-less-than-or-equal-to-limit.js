@@ -3,61 +3,9 @@
  * @param {number} limit
  * @return {number}
  */
-var longestSubarray = function(nums, limit) {
-    let maxSub = -Infinity;
-    let n = nums.length;
-    
-    for (let i = 0; i < n; i++) {
-        let subArray = [];
-        for (let j = i; j < n; j++) {
-            subArray.push(nums[j]);
-            let min = Math.min(...subArray);
-            let max = Math.max(...subArray);
-            
-            if (Math.abs(max - min) <= limit) {
-                maxSub = Math.max(maxSub, subArray.length);
-            }
-        }
-    }
-    return maxSub;
-    
-};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Time: O(n)
+// Space:
 var longestSubarray = function(nums, limit) {
  
     let count = 0;
