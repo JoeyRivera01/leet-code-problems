@@ -3,7 +3,8 @@
  * @param {string[]} wordDict
  * @return {boolean}
  */
-var wordBreak = function(s, wordDict, memo = {}) {
+
+const wordBreak = (s, wordDict, memo = {}) => {
     if (s in memo) return memo[s];
     if (s === '') return true;
     
@@ -19,5 +20,4 @@ var wordBreak = function(s, wordDict, memo = {}) {
     
     memo[s] = false;
     return false;
-    
-};
+}
