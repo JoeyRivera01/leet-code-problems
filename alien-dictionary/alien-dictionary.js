@@ -4,69 +4,40 @@
  */
 // Approach: Topological Sort (DAG)
 var alienOrder = function(words) {
-    const queue = [];
-    const graph = new Map(); // {char, Set<char>}
-    const indegree = new Map(); // {char, number}
-    const result = [];
-    
-    // Initialize graph and indegree
-    for (let word of words) {
-        for (let char of word) {
-            if (!graph.has(char)) {
-                graph.set(char, []);
+    let graph = {};
+    words.forEach((word)=>{word.split('').forEach((char)=>graph[char]=[])}); // initialize graph entry for every character
+	// build the relationship graph
+    for (let i=0;i<words.length-1;i++) {
+        let top = words[i];
+        let down = words[i+1];
+        let minLength = Math.min(top.length, down.length);
+        for (let j=0;j<minLength;j++) {
+            if (top[j]!=down[j]) {
+                graph[top[j]].push(down[j]);
+                break; // only need to find the first pair
             }
-            
-            if (!indegree.has(char)) {
-                indegree.set(char, 0);
-            }
-        }
-    }
-    
-    // Iterate by words to initialize graph and indegree
-    for (let i = 1; i < words.length; i++) {
-        let word1 = words[i - 1];
-        let word2 = words[i];
-        let length = Math.min(word1.length, word2.length);
-       
-        // If wrong order
-        if (word2.length < word1.length && word1.startsWith(word2)) {
-            return '';
-        }
-        
-        for (let j = 0; j < length; j++) {
-            if (word1[j] !== word2[j]) {
-                // Add relation
-                graph.get(word1[j]).push(word2[j]);
-                
-                // Increase indegree
-                indegree.set(word2[j], indegree.get(word2[j]) + 1);
-                break;
-            }
-        }
-    }
-    
-    // Add chars with 0 indegree to queue
-    for (let c of indegree) {
-        if (c[1] === 0) {
-            queue.push(c[0]);
-        }
-    }
-    
-    // BFS
-    while (queue.length) {
-        let vertex = queue.shift();
+            if(top.length > down.length && top.startsWith(down)) return "";
 
-        for (let char of graph.get(vertex)) {
-            let val = indegree.get(char) - 1;
-            indegree.set(char, val);
-            
-            if (val === 0) {
-                queue.push(char);
-            }
         }
-        
-        result.push(vertex);
+    } 
+    let visiting = new Set(), visited = new Set(), result = [];
+	// regular graph dfs
+    var dfs = function(char) {
+        if (visiting.has(char)) return false;
+        if (visited.has(char)) return true;
+        visiting.add(char);
+        for (let n of graph[char]) {
+            if (!dfs(n)) return false;
+        }
+        visiting.delete(char);
+        visited.add(char);
+        result.push(char);
+        return true;
     }
-    
-    return result.length === indegree.size ? result.join('') : '';
+
+    for ([key, val] of Object.entries(graph)) {
+        if (!dfs(key)) return "";
+    }
+    return result.reverse().join('');
 };
+
