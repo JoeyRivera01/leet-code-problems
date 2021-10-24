@@ -2,12 +2,15 @@
  * @param {number[]} prices
  * @return {number}
  */
-const maxProfit = function(prices) {
-    let result = 0;
+// time complexity O(n), only a single pass is needed
+// space complexity O(1), only two variables are used
+
+const maxProfit = (prices) => {
+    let profit = 0;
     let min = prices[0];
-    for(let i = 1; i < prices.length; i++) {
-        min = Math.min(prices[i], min);
-        result = Math.max(result, prices[i] - min);
+    for (let i = 1; i < prices.length; i++) {
+        profit = Math.max(profit, prices[i] - min);
+        min = Math.min(min, prices[i]);
     }
-    return result;
-};
+    return profit;
+}
