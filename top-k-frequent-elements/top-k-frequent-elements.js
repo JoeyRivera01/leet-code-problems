@@ -3,30 +3,25 @@
  * @param {number} k
  * @return {number[]}
  */
-var topKFrequent = function(nums, k) {
-    // build a map that counts the numbers
-    const numCountMap = nums.reduce((map, num) => map.set(num, map.get(num) + 1 || 1), new Map());
-    // console.log(numCountMap);
+// Approach: Heap
+// Time: O(N log k)
+const topKFrequent = (nums, k) => {
+    const map = {};
+    const result = [];
+    const bucket = Array(nums.length + 1).fill().map(() => []);
     
-    const minPQ = [];
-    for (let [num, count] of numCountMap.entries()) {
-        if (minPQ.length < k) {
-            minPQ.push([num, count]);
-            minPQ.sort((a, b) => b[1] - a[1]); // smallest elements at end for pop()
-            // console.log(minPQ);
-        } else {
-            let topCount = minPQ[minPQ.length - 1][1];
-            if (topCount < count) {
-                minPQ.pop();
-                minPQ.push([num, count]);
-                minPQ.sort((a, b) => b[1] - a[1]); // smallest elements at end for pop()
-            }
-        }
+    for (let num of nums) {
+        map[num] = ~~map[num] + 1;
     }
     
-    for (let i = 0; i < minPQ.length; i++) {
-        minPQ[i].pop();
+    for (let num in map) {
+        bucket[map[num]].push(parseInt(num));
     }
     
-    return minPQ;
+    for (let i = nums.length; i >= 0 && k > 0; k--) {
+        while (bucket[i].length === 0) i--;
+        result.push(bucket[i].shift());
+    }
+    
+    return result;
 };
