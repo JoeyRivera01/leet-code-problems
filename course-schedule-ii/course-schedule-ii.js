@@ -4,31 +4,44 @@
  * @return {number[]}
  */
 
-const findOrder = (numCourses, prerequisites) => {
-  const inDegrees = Array(numCourses).fill(0);
-  for (const [v] of prerequisites) {
-    console.log('v', v);
-    inDegrees[v]++;
-    console.log('inDegrees[v]', inDegrees[v]);
-  }
+// Time Complexity: O(v + e) where v is the number of vertices and E is the number of edges
+// Space complexity: O(v + e) for the queue and adjacency list.
 
-  const q = [];
-  for (let i = 0; i < inDegrees.length; i++) {
-    const degree = inDegrees[i];
-    if (degree === 0) q.push(i);
-  }
-
-  const res = [];
-  while (q.length) {
-    const u0 = q.shift();
-    numCourses--;
-    res.push(u0);
-    for (const [v, u] of prerequisites) {
-      if (u === u0) {
-        inDegrees[v]--;
-        if (inDegrees[v] === 0) q.push(v);
-      }
+var findOrder = function(numCourses, prerequisites) {
+    if (numCourses === 1) return [0];
+    
+    const visited = new Set(); // track nodes we've visited globally
+    const courseMap = new Map();
+    const topSortArr = [];
+    
+    // create adj list
+    for (let [course, prereq] of prerequisites) {
+        if (!courseMap.has(course)) courseMap.set(course, []);
+        courseMap.get(course).push(prereq);
     }
-  }
-  return numCourses === 0 ? res : [];
+    
+    for (let i = 0; i < numCourses; i++) {
+        if (!topSort(i)) return [];
+    }
+    
+    
+    function topSort(course, visiting = new Set()) {
+        if (visiting.has(course)) return false;
+        if (visited.has(course)) return true;
+        
+        if (courseMap.has(course)) {
+            visiting.add(course);
+            for (let preq of courseMap.get(course)) {
+                if (!topSort(preq, visiting)) return false;
+            }
+            visiting.delete(course);
+        }
+        
+        topSortArr.push(course);
+        visited.add(course);
+        return true;
+    }
+    
+    // return the topological ordering by reversing the result;
+    return topSortArr;
 };
