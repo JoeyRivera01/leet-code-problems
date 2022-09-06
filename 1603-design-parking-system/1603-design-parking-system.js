@@ -4,7 +4,7 @@
  * @param {number} small
  */
 var ParkingSystem = function(big, medium, small) {
-    this.count = [big, medium, small];
+    this.count = [null, big, medium, small];
 };
 
 /** 
@@ -12,7 +12,12 @@ var ParkingSystem = function(big, medium, small) {
  * @return {boolean}
  */
 ParkingSystem.prototype.addCar = function(carType) {
-    return this.count[carType - 1]-- > 0;
+    if (this.count[carType]) {
+        this.count[carType]--;
+        return true;
+    } else {
+        return false;
+    }
 };
 
 /** 
